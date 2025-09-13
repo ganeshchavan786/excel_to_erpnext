@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Salary Slips</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.salary-slip {
+    width: 210mm;              /* A4 width */
+    height: 297mm;             /* Full A4 height */
+    padding: 20mm;
+    box-sizing: border-box;
+    margin: auto;
+    border: 1px solid #333;
+    border-radius: 8px;
+    page-break-after: always;  /* ✅ प्रत्येक slip नंतर नवा page */
+}
+.header {
+    text-align: center;
+    margin-bottom: 15px;
+}
+.company-name {
+    font-size: 22px;
+    font-weight: bold;
+}
+.slip-title {
+    font-size: 18px;
+    margin-top: 5px;
+    font-weight: bold;
+    text-decoration: underline;
+}
+.employee-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+.info-left, .info-right {
+    width: 48%;
+}
+.info-row {
+    margin-bottom: 5px;
+}
+.label {
+    font-weight: bold;
+}
+.earnings-deductions {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+.earnings, .deductions {
+    width: 48%;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+}
+.section-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+    text-decoration: underline;
+}
+.amount-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+.total-row {
+    font-weight: bold;
+    border-top: 1px solid #ccc;
+    padding-top: 5px;
+}
+.net-pay {
+    text-align: right;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+.signatures {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 60px;
+}
+.signature {
+    text-align: center;
+    width: 45%;
+    font-size: 14px;
+}
+.signature-line {
+    margin-top: 50px;
+    border-top: 1px solid #333;
+}
+@media print {
+    body {
+        margin: 0;
+    }
+    .salary-slip {
+        border: none;
+    }
+}
+</style>
+</head>
+<body>
+
+<script>
+const salaryData = [
+    {month:'April', year:'2021', salary:3583, workingDays:28, payDate:'30/04/2021'},
+    {month:'May', year:'2021', salary:4877, workingDays:29, payDate:'31/05/2021'},
+    {month:'June', year:'2021', salary:5033, workingDays:27, payDate:'30/06/2021'},
+    {month:'July', year:'2021', salary:5200, workingDays:30, payDate:'31/07/2021'},
+    {month:'August', year:'2021', salary:9716, workingDays:29, payDate:'31/08/2021'},
+    {month:'September', year:'2021', salary:5700, workingDays:28, payDate:'30/09/2021'},
+    {month:'October', year:'2021', salary:6248, workingDays:25, payDate:'31/10/2021'},
+];
+
+salaryData.forEach(data => {
+    const netPay = data.salary - 200; // Professional Tax
+    document.write(`
+    <div class="salary-slip">
+        <div class="header">
+            <div class="company-name">Vrushali Infotech Pvt Ltd.</div>
+            <div class="slip-title">SALARY SLIP</div>
+            <div style="font-size: 12px; margin-top: 5px;">
+                Ananda Niwas Shivshankar Colony No.2 Chakrpani Road Bhosari<br>
+                GSTIN/UIN: 27AAECV1138M1Z3 | State: Maharashtra, Code: 27<br>
+                CIN: U72200PN2012PTC142974 | E-Mail: ganesh@vrushaliinfotech.com
+            </div>
+        </div>
+        <div class="employee-info">
+            <div class="info-left">
+                <div class="info-row"><span class="label">Employee Name:</span> Supriya Sirkole</div>
+                <div class="info-row"><span class="label">Employee Code:</span> 0158</div>
+                <div class="info-row"><span class="label">Designation:</span> Android Developer</div>
+                <div class="info-row"><span class="label">PAN:</span> BWNPP6762N</div>
+            </div>
+            <div class="info-right">
+                <div class="info-row"><span class="label">Month/Year:</span> ${data.month} ${data.year}</div>
+                <div class="info-row"><span class="label">Pay Date:</span> ${data.payDate}</div>
+                <div class="info-row"><span class="label">Working Days:</span> ${data.workingDays}</div>
+            </div>
+        </div>
+        <div class="earnings-deductions">
+            <div class="earnings">
+                <div class="section-title">EARNINGS</div>
+                <div class="amount-row"><span>Basic</span><span>₹${data.salary.toFixed(2)}</span></div>
+                <div class="amount-row total-row"><span>Total Earnings</span><span>₹${data.salary.toFixed(2)}</span></div>
+            </div>
+            <div class="deductions">
+                <div class="section-title">DEDUCTIONS</div>
+                <div class="amount-row"><span>Professional Tax</span><span>₹200.00</span></div>
+                <div class="amount-row total-row"><span>Total Deductions</span><span>₹200.00</span></div>
+            </div>
+        </div>
+        <div class="net-pay">NET PAY: ₹${netPay.toFixed(2)}</div>
+        <div class="signatures">
+            <div class="signature">
+                <div class="signature-line"></div>
+                Employee Signature
+            </div>
+            <div class="signature">
+                <div class="signature-line"></div>
+                Employer Signature
+            </div>
+        </div>
+    </div>
+    `);
+});
+</script>
+
+</body>
+</html>

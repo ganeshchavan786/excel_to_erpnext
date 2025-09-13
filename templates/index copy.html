@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Excel to ERPNext Sales Invoice</title>
+  <!-- Bootstrap CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body { background-color: #f8f9fa; }
+    .container { max-width: 1100px; margin-top: 30px; }
+    pre#json-output {
+      background-color: #212529;
+      color: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      max-height: 350px;
+      overflow-y: auto;
+      font-size: 0.9rem;
+    }
+    table thead { background-color: #343a40; color: white; }
+    table tbody tr:hover { background-color: #f1f3f5; }
+    .footer-text { font-size: 0.85rem; color: #6c757d; margin-top: 20px; text-align: center; }
+    #activityLog {
+      background-color: #1e1e2f;
+      color: #f8f9fa;
+      padding: 12px;
+      height: 200px;
+      overflow-y: auto;
+      font-family: 'Courier New', Courier, monospace;
+      border-radius: 5px;
+      border: 1px solid #44475a;
+      box-shadow: inset 0 0 5px #2f3347;
+      margin-bottom: 12px;
+      white-space: pre-wrap;
+    }
+    #lastCreated {
+      background: linear-gradient(90deg,#e8f5e9,#e0f2f1);
+      border: 1px solid #c8e6c9;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-weight: 600;
+      color: #2e7d32;
+    }
+    .small-muted { font-size: 0.82rem; color: #6c757d; }
+  </style>
+</head>
+<body>
+
+<div class="container shadow p-4 bg-white rounded">
+  <h2 class="mb-3 text-primary">Excel → ERPNext Sales Invoice Uploader</h2>
+
+  <!-- Step 1 & Step 2 -->
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label">Step 1: Upload Excel/CSV</label>
+      <input class="form-control" type="file" id="fileInput" accept=".xlsx,.xls,.csv" />
+      <button class="btn btn-primary mt-3" id="uploadBtn">Upload and Preview</button>
+      <div class="small-muted mt-2">Supported: .xlsx, .xls, .csv</div>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Step 2: Generate JSON</label>
+      <input type="text" id="companyInput" class="form-control mb-2" value="Vrushali Infotech Pvt Ltd" />
+      <textarea id="remarksInput" class="form-control mb-2" rows="2">Generated from Excel Uploader</textarea>
+      <button class="btn btn-success" id="generateBtn" disabled>Generate JSON</button>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- Preview Table -->
+  <div class="mb-3">
+    <h5>Preview Data (First 5 Rows)</h5>
+    <div id="previewTable" class="table-responsive"></div>
+  </div>
+
+  <!-- API Config -->
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label">API Token (key:secret)</label>
+      <input type="text" id="apiTokenInput" class="form-control" placeholder="key:secret" />
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">API Endpoint</label>
+      <input type="text" id="endpointInput" class="form-control" value="https://vrushaliinfotech.com/api/resource/Sales%20Invoice" />
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="mt-3">
+    <button class="btn btn-danger" id="postBtn" disabled>Post Invoice(s)</button>
+    <button class="btn btn-outline-secondary ms-2" id="downloadJsonBtn" disabled>Download JSON</button>
+  </div>
+
+  <hr />
+
+  <!-- JSON + Logs -->
+  <div class="row">
+    <div class="col-md-8">
+      <h5>Generated JSON</h5>
+      <pre id="json-output"></pre>
+    </div>
+    <div class="col-md-4">
+      <h5>Activity Log</h5>
+      <div id="activityLog"></div>
+      <div id="lastCreated" style="display:none;">Last Created Invoice: <span id="lastInvoiceNo"></span></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer-text">
+  Developed by Vrushali Infotech Pvt Ltd &copy; 2025
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- App JS -->
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
