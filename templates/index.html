@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>ERPNext Sales Invoice Uploader - Vrushali Infotech</title>
+  <title>ERPNext Sales Invoice Uploader - Enhanced</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <style>
     body { background: #f9f9f9; }
@@ -42,73 +42,132 @@
       font-weight: 500;
     }
     .btn { margin: 5px 3px; }
-    .credentials-info {
-      background: #e3f2fd;
+    
+    /* Validation Panel Styles */
+    #validationPanel {
+      display: none;
+      background: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .progress {
+      height: 25px;
+      margin-bottom: 15px;
+    }
+    
+    .progress-bar {
+      transition: width 0.3s ease;
+      font-weight: 600;
+    }
+    
+    .validation-summary .card {
+      border: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .validation-summary .card-body {
+      padding: 15px;
+    }
+    
+    .validation-errors .list-group-item {
+      border: none;
+      margin-bottom: 8px;
+      border-radius: 6px;
+    }
+    
+    .auto-corrections {
+      background: #f8f9fa;
       padding: 15px;
       border-radius: 6px;
-      margin-bottom: 20px;
-      border-left: 4px solid #2196f3;
+      border-left: 4px solid #007bff;
     }
-    .credentials-info h6 {
-      color: #1976d2;
+    
+    .correction-list .form-check {
       margin-bottom: 10px;
+      padding-left: 30px;
     }
-    .form-control:disabled {
-      background-color: #f8f9fa;
-      opacity: 0.8;
+    
+    .correction-list .form-check-label {
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+    }
+    
+    .validation-actions {
+      text-align: center;
+      padding-top: 15px;
+      border-top: 1px solid #dee2e6;
+    }
+    
+    /* Status indicators */
+    .status-passed { color: #28a745; }
+    .status-warning { color: #ffc107; }
+    .status-failed { color: #dc3545; }
+    
+    /* Progress text */
+    .progress-text {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      line-height: 25px;
+      color: #fff;
+      font-weight: 600;
+      z-index: 2;
+    }
+    
+    .progress {
+      position: relative;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2 class="mb-4">ERPNext Sales Invoice Uploader</h2>
-    <p class="text-muted">Upload Excel/CSV files and automatically create Sales Invoices in ERPNext</p>
-
-    <!-- Credentials Info -->
-    <div class="credentials-info">
-      <h6>🔐 API Configuration</h6>
-      <p class="mb-1"><strong>Company:</strong> Vrushali Infotech Pvt Ltd</p>
-      <p class="mb-1"><strong>Endpoint:</strong> https://vrushaliinfotech.com/api/resource/Sales%20Invoice</p>
-      <p class="mb-0"><strong>Status:</strong> <span class="badge bg-success">Pre-configured</span></p>
-    </div>
+    <h2 class="mb-4">ERPNext Sales Invoice Uploader - Enhanced with Validation</h2>
 
     <!-- Upload Section -->
     <div class="mb-3">
-      <label for="fileInput" class="form-label">Select Excel/CSV File</label>
-      <input type="file" id="fileInput" class="form-control mb-2" accept=".xlsx,.xls,.csv">
-      <button class="btn btn-primary" id="uploadBtn">📁 Upload & Preview</button>
+      <input type="file" id="fileInput" class="form-control mb-2">
+      <button class="btn btn-primary" id="uploadBtn">Upload & Preview</button>
     </div>
 
     <!-- Preview Section -->
     <div id="previewTable" class="mb-4"></div>
 
     <!-- Config Section -->
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label for="companyInput" class="form-label">Company</label>
-        <input type="text" id="companyInput" class="form-control mb-2" value="Vrushali Infotech Pvt Ltd" readonly>
-      </div>
-      <div class="col-md-6">
-        <label for="remarksInput" class="form-label">Remarks (Optional)</label>
-        <input type="text" id="remarksInput" class="form-control mb-2" placeholder="Generated from Excel Uploader">
-      </div>
-    </div>
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label for="apiTokenInput" class="form-label">API Token</label>
-        <input type="text" id="apiTokenInput" class="form-control mb-2" value="6b9c2cfc6e6aaaf:a362001e6dfee4c" readonly>
-      </div>
-      <div class="col-md-6">
-        <label for="endpointInput" class="form-label">API Endpoint</label>
-        <input type="text" id="endpointInput" class="form-control mb-2" value="https://vrushaliinfotech.com/api/resource/Sales%20Invoice" readonly>
-      </div>
+    <div class="mb-3">
+      <input type="text" id="companyInput" class="form-control mb-2" placeholder="Company (default: Vrushali Infotech Pvt Ltd)">
+      <input type="text" id="remarksInput" class="form-control mb-2" placeholder="Remarks (default: Generated from Excel Uploader)">
+      <input type="text" id="apiTokenInput" class="form-control mb-2" placeholder="API Token (key:secret)">
+      <input type="text" id="endpointInput" class="form-control mb-2" placeholder="Endpoint (default: https://vrushaliinfotech.com/api/resource/Sales%20Invoice)">
     </div>
 
-    <!-- Actions -->
+    <!-- Actions Section -->
     <div class="mb-3">
-      <button class="btn btn-success" id="generateBtn" disabled>🔄 Generate JSON</button>
-      <button class="btn btn-warning" id="postBtn" disabled>🚀 Post Invoice(s)</button>
+      <button class="btn btn-info" id="validateBtn" disabled>🔍 Validate Masters</button>
+      <button class="btn btn-success" id="generateBtn" disabled>📋 Generate JSON</button>
+      <button class="btn btn-warning" id="postBtn" disabled>📤 Post Invoice(s)</button>
       <button class="btn btn-secondary" id="downloadJsonBtn" disabled>💾 Download JSON</button>
+    </div>
+
+    <!-- Validation Panel -->
+    <div id="validationPanel">
+      <h4 class="mb-3">🔍 Master Data Validation</h4>
+      
+      <!-- Progress Bar -->
+      <div id="validationProgress">
+        <div class="progress">
+          <div class="progress-text">Initializing...</div>
+          <div class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+      </div>
+      
+      <!-- Validation Results -->
+      <div id="validationResults">
+        <!-- Results will be populated by JavaScript -->
+      </div>
     </div>
 
     <!-- JSON Output -->
@@ -124,22 +183,52 @@
       <h6>✅ Last Posted Invoices:</h6>
       <ul id="lastInvoiceList"></ul>
     </div>
-
-    <!-- Instructions -->
-    <div class="mt-4 p-3" style="background: #fff3cd; border-radius: 6px; border-left: 4px solid #ffc107;">
-      <h6 class="text-warning">📋 Instructions:</h6>
-      <ol class="mb-0">
-        <li>Upload your Excel/CSV file with invoice data</li>
-        <li>Review the preview table to ensure data is correct</li>
-        <li>Click "Generate JSON" to create invoice structures</li>
-        <li>Click "Post Invoice(s)" to submit to ERPNext</li>
-      </ol>
-      <hr>
-      <p class="mb-0 small"><strong>Required Excel Columns:</strong> Customer, Item Code, Qty, Rate, GST Rate (%), Customer State</p>
-      <p class="mb-0 small"><strong>Optional Columns:</strong> Invoice No, Item Name, Description, UOM, Warehouse, GST HSN Code</p>
+    
+    <!-- Help Section -->
+    <div class="mt-4">
+      <div class="accordion" id="helpAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#helpContent">
+              💡 How to Use Validation System
+            </button>
+          </h2>
+          <div id="helpContent" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+            <div class="accordion-body">
+              <h6>Step-by-Step Guide:</h6>
+              <ol>
+                <li><strong>Upload Excel:</strong> Select your Excel/CSV file with invoice data</li>
+                <li><strong>Enter API Details:</strong> Add your ERPNext API token and endpoint</li>
+                <li><strong>Validate Masters:</strong> Click "Validate Masters" to check customers and items</li>
+                <li><strong>Review Results:</strong> Check validation summary for errors and warnings</li>
+                <li><strong>Apply Corrections:</strong> Use auto-corrections for typos and formatting issues</li>
+                <li><strong>Generate JSON:</strong> Once validation passes, generate invoice JSON</li>
+                <li><strong>Post to ERP:</strong> Submit invoices to ERPNext</li>
+              </ol>
+              
+              <h6 class="mt-3">Validation Features:</h6>
+              <ul>
+                <li>🔍 <strong>Customer Validation:</strong> Checks customer existence, GSTIN format, active status</li>
+                <li>📦 <strong>Item Validation:</strong> Verifies item codes, HSN codes, UOM, pricing</li>
+                <li>🔧 <strong>Auto-corrections:</strong> Suggests fixes for typos and formatting issues</li>
+                <li>⚠️ <strong>Smart Warnings:</strong> Identifies potential issues without blocking workflow</li>
+                <li>❌ <strong>Error Prevention:</strong> Catches critical errors before posting to ERPNext</li>
+              </ul>
+              
+              <h6 class="mt-3">Error Types:</h6>
+              <ul>
+                <li><span class="badge bg-danger">Critical</span> - Must be fixed before proceeding</li>
+                <li><span class="badge bg-warning">Warning</span> - Recommended to fix but not blocking</li>
+                <li><span class="badge bg-info">Info</span> - Informational suggestions</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/static/script.js"></script>
 </body>
 </html>
